@@ -1,44 +1,61 @@
-import React, { useState } from 'react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { useWallet, WalletProvider } from '@solana/wallet-adapter-react';
+import React, { useState } from "react";
+import axios from "axios";
 
 const App = () => {
-  const [mintAmount, setMintAmount] = useState(0);
-  const [userAddress, setUserAddress] = useState('');
-  const wallet = useWallet();
+  const [userAddress, setUserAddress] = useState("");
+  const [amount, setAmount] = useState("");
 
   const handleMint = async () => {
-    const connection = new Connection('https://api.testnet.solana.com', 'confirmed');
-
-    const tx = new Transaction();
-    // Add your mint transaction logic here
-
-    // Send the transaction to Solana
-    await connection.sendTransaction(tx, [wallet.publicKey]);
+    try {
+      const response = await axios.post("http://localhost:3000/mint", { userAddress, amount: parseFloat(amount) });
+      alert(`Success! Transaction Signature: ${response.data.signature}`);
+    } catch (error) {
+      alert(`Error: ${error.response ? error.response.data.error : error.message}`);
+    }
   };
 
   const handleRedeem = async () => {
-    // Implement the redeem logic here similar to mint
+    try {
+      const response = await axios.post("http://localhost:3000/redeem", { userAddress, amount: parseFloat(amount) });
+      alert(`Success! Transaction Signature: ${response.data.signature}`);
+    } catch (error) {
+      alert(`Error: ${error.response ? error.response.data.error : error.message}`);
+    }
   };
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-xl">Create Your Stablecoin</h1>
-      <form onSubmit={e => e.preventDefault()}>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+      <h1 className="text-4xl font-bold mb-6 text-gray-800">Stablecoin Factory</h1>
+      <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
+        <input
+          type="text"
+          placeholder="Your Wallet Address"
+          value={userAddress}
+          onChange={(e) => setUserAddress(e.target.value)}
+          className="border border-gray-300 rounded-lg p-2 w-full mb-4"
+        />
         <input
           type="number"
           placeholder="Amount"
-          value={mintAmount}
-          onChange={e => setMintAmount(Number(e.target.value))}
-          className="p-2 my-2 border"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="border border-gray-300 rounded-lg p-2 w-full mb-4"
         />
-        <button onClick={handleMint} className="bg-blue-500 text-white p-2">
-          Mint Stablecoins
-        </button>
-        <button onClick={handleRedeem} className="bg-red-500 text-white p-2 ml-4">
-          Redeem Stablecoins
-        </button>
-      </form>
+        <div className="flex justify-between">
+          <button
+            onClick={handleMint}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Mint Stablecoins
+          </button>
+          <button
+            onClick={handleRedeem}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Redeem Stablecoins
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

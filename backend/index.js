@@ -1,43 +1,44 @@
-const express = require('express');
-const { Connection, PublicKey, Keypair, Transaction } = require('@solana/web3.js');
+const express = require("express");
+const { Connection, Keypair, PublicKey, Transaction, SystemProgram } = require("@solana/web3.js");
 const app = express();
 const port = 3000;
 
-const connection = new Connection('https://api.testnet.solana.com', 'confirmed');
+const connection = new Connection("https://api.testnet.solana.com", "confirmed");
+const PROGRAM_ID = new PublicKey("A3YpWFLbUeKzeUfHB4dmYESQJuXWNVe6HHfiGErnnCgw");
 
 app.use(express.json());
 
-// Mint Stablecoin Endpoint
-app.post('/mint', async (req, res) => {
+// Mint Stablecoin API
+app.post("/mint", async (req, res) => {
     const { userAddress, amount } = req.body;
 
     try {
         const userPublicKey = new PublicKey(userAddress);
-        const mintAccount = new Keypair(); // Generate mint account (just for demo)
+        const transaction = new Transaction();
 
-        // Call your Solana program's mint function here
-        // For now, just a placeholder for Solana mint logic
+        // Add your Solana program's mint instruction logic here
 
-        res.send(`Minted ${amount} stablecoins for ${userAddress}`);
+        const signature = await connection.sendTransaction(transaction, [/* Add signer */]);
+        res.send({ message: "Stablecoins minted successfully!", signature });
     } catch (error) {
-        res.status(500).send(`Error minting: ${error.message}`);
+        res.status(500).send({ error: error.message });
     }
 });
 
-// Redeem Stablecoin Endpoint
-app.post('/redeem', async (req, res) => {
+// Redeem Stablecoin API
+app.post("/redeem", async (req, res) => {
     const { userAddress, amount } = req.body;
 
     try {
         const userPublicKey = new PublicKey(userAddress);
-        const stablecoinAccount = new Keypair(); // Get stablecoin account (just for demo)
+        const transaction = new Transaction();
 
-        // Call your Solana program's redeem function here
-        // For now, just a placeholder for Solana redeem logic
+        // Add your Solana program's redeem instruction logic here
 
-        res.send(`Redeemed ${amount} stablecoins for ${userAddress}`);
+        const signature = await connection.sendTransaction(transaction, [/* Add signer */]);
+        res.send({ message: "Stablecoins redeemed successfully!", signature });
     } catch (error) {
-        res.status(500).send(`Error redeeming: ${error.message}`);
+        res.status(500).send({ error: error.message });
     }
 });
 
