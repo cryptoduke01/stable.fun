@@ -42,6 +42,10 @@ const TokenFactory = () => {
   return (
     <section className="min-h-screen bg-black text-white relative py-24">
       <div className="max-w-7xl mx-auto px-6">
+        <h2 className="text-4xl md:text-5xl font-bold mb-6 text-center">
+          Stablecoin Factory
+        </h2>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* First Row - Two Cards */}
           <motion.div
@@ -104,8 +108,8 @@ const TokenFactory = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-            className="bg-gray-900/80 backdrop-blur-sm rounded-3xl p-8 w-full aspect-[2.5/1] relative overflow-hidden group cursor-pointer"
-              
+              className="bg-gray-900/80 backdrop-blur-sm rounded-3xl p-8 w-full aspect-[2.5/1] relative overflow-hidden group cursor-pointer"
+
             >
               <div className="grid grid-cols-2 h-full">
                 <div className="relative z-10">

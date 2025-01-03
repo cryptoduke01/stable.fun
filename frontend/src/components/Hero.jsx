@@ -115,10 +115,10 @@ const Hero = () => {
                             Create your own stablecoins backed by yield-bearing stablebonds and start earning today.
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <Button className="bg-white text-black hover:bg-gray-200">
-                                Get Started for Free
+                            <Button className="bg-white text-black hover:bg-gray-200 cursor-pointer">
+                                Get Started
                             </Button>
-                            <Button variant="outline" className="border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-colors">
+                            <Button className="bg-white text-black hover:bg-gray-200">
                                 Learn More
                             </Button>
                         </div>
@@ -142,7 +142,6 @@ const Hero = () => {
                         <div className="bg-gray-900/50 backdrop-blur-sm p-6 rounded-lg border border-gray-800">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-2xl font-bold">Tokens Created (30 Days)</h3>
-                                <div className="text-green-500 text-xl">+24% this month</div>
                                 {/* <button className="text-gray-400">•••</button> */}
                             </div>
                             <div className="h-64 flex items-end justify-between space-x-1">
@@ -169,6 +168,7 @@ const Hero = () => {
                                 <div>
                                     <div className="text-xl font-bold">247 Tokens Created</div>
                                 </div>
+                                <div className="text-green-500 text-xl">+24% this month</div>
                             </div>
                         </div>
                     </motion.div>
