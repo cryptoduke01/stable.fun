@@ -107,7 +107,7 @@ const TokenFactory = () => {
             </div>
           </div>
 
-          {/* Previous Tokens Section */}
+          {/* Previous Tokens Section
           <div className="mt-8">
             <h3 className="text-xl md:text-2xl font-bold mb-4">Your Stablecoins</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -131,7 +131,7 @@ const TokenFactory = () => {
                 </Card>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
