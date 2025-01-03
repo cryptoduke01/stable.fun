@@ -4,7 +4,7 @@ const app = express();
 const port = 3000;
 
 const connection = new Connection("https://api.testnet.solana.com", "confirmed");
-const PROGRAM_ID = new PublicKey("A3YpWFLbUeKzeUfHB4dmYESQJuXWNVe6HHfiGErnnCgw");
+const PROGRAM_ID = new PublicKey("E9yMXgYhxfwnMKT5zPgEcMqL9KUW15Gg4qRqPEJLkB3k");
 
 app.use(express.json());
 
