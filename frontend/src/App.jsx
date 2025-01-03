@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import About from "./components/About";
 import TokenFactory from "./components/TokenFactory";
 import StablecoinsDashboard from "./components/StablecoinsDashboard";
+import Footer from "./components/Footer";
 import { Analytics } from "@vercel/analytics/react"
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
       <About />
       <TokenFactory />
       <StablecoinsDashboard />
+      <Footer />
     </div>
   );
 };

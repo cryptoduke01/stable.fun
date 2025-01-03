@@ -53,10 +53,10 @@ const StablecoinsDashboard = () => {
           transition={{ duration: 0.5 }}
           className="mb-12"
         >
-          <div className="inline-block px-4 py-2 bg-gray-800 rounded-full text-sm mb-4">
-            LIVE STABLECOINS
+          <div className="inline-block px-4 py-2 bg-gray-800 rounded-full text-sm mb-6">
+            *LIVE STABLECOINS
           </div>
-          <h2 className="text-3xl font-bold mb-4">Active Stablecoins</h2>
+          <h2 className="text-4xl md:text-5xl text-white text-center font-bold mb-4">Active Stablecoins</h2>
           <p className="text-gray-400">Track all stablecoins created through our platform</p>
         </motion.div>
 
@@ -87,7 +87,7 @@ const StablecoinsDashboard = () => {
               <div className="space-y-4">
                 <div>
                   <div className="text-sm text-gray-400 mb-1">Total Supply</div>
-                  <div className="text-xl font-bold">{coin.totalSupply}</div>
+                  <div className="text-xl text-white font-bold">{coin.totalSupply}</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-400 mb-1">Target Currency</div>
@@ -114,7 +114,7 @@ const StablecoinsDashboard = () => {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="mt-12 flex justify-center"
         >
-          <Button variant="outline" className="border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-colors text-white">
+          <Button variant="outline" className="border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-colors text-black hover:text-white">
             View All Stablecoins
           </Button>
         </motion.div>

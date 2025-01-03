@@ -115,10 +115,10 @@ const Hero = () => {
                             Create your own stablecoins backed by yield-bearing stablebonds and start earning today.
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <Button className="bg-white text-black hover:bg-gray-200 cursor-pointer">
+                            <Button variant="outline" className="border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-colors text-black hover:text-white">
                                 Get Started
                             </Button>
-                            <Button className="bg-white text-black hover:bg-gray-200">
+                            <Button variant="outline" className="border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-colors text-black hover:text-white">
                                 Learn More
                             </Button>
                         </div>
