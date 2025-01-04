@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Wallet } from 'lucide-react';
-import { motion, useScroll } from "framer-motion"
+import { Menu, X, Wallet } from "lucide-react";
+import { motion } from "framer-motion";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useWallet } from "@solana/wallet-adapter-react";
+import TokenFactory from "./TokenFactory";
+
 const Hero = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const navItems = ['About', 'Token Factory', 'Mint Token', 'Dashboard'];
+    const [showTokenCreator, setShowTokenCreator] = useState(false);
+    const navItems = ["About", "Token Factory", "Mint Token", "Dashboard"];
+    const { publicKey, connected } = useWallet(); // Wallet connection status
 
     const tokenData = Array.from({ length: 10 }, () =>
         Math.floor(Math.random() * 50) + 10
@@ -15,25 +21,29 @@ const Hero = () => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
         };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-
-
 
     return (
         <div className="min-h-screen bg-black text-white relative overflow-hidden">
+            {/* Show TokenCreator on button click */}
+            {showTokenCreator && <TokenCreator />}
+
+          
             <div
                 className="absolute inset-0 opacity-50"
                 style={{
                     backgroundImage: `url('/src/assets/heroparticle.png')`,
-                    backgroundSize: '200px 200px',
-                    backgroundRepeat: 'repeat',
+                    backgroundSize: "200px 200px",
+                    backgroundRepeat: "repeat",
                     opacity: 0.17, // Reduce opacity for subtle effect
                 }}
             />
             <motion.nav
-                className={`px-6 py-4 fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-black/50 backdrop-blur-md border-b border-gray-800' : ''
+                className={`px-6 py-4 fixed w-full z-50 transition-all duration-300 ${scrolled
+                    ? "bg-black/50 backdrop-blur-md border-b border-gray-800"
+                    : ""
                     }`}
             >
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -65,13 +75,14 @@ const Hero = () => {
                         animate={{ opacity: 1, x: 0 }}
                         className="hidden md:block"
                     >
-                        <Button className="bg-white text-black hover:bg-gray-200 transition-colors">
-                            <Wallet className="w-4 h-4 mr-2" />
-                            Connect Wallet
-                        </Button>
+                        {/* Wallet connection button */}
+                        <WalletMultiButton className="bg-white text-black hover:bg-gray-200 transition-colors" />
                     </motion.div>
 
-                    <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <button
+                        className="md:hidden"
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    >
                         {isMenuOpen ? <X /> : <Menu />}
                     </button>
                 </div>
@@ -82,16 +93,17 @@ const Hero = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="md:hidden mt-4 pb-4"
                     >
-                        {navItems.map(item => (
-                            <a key={item} href="#" className="block py-2 text-gray-300 hover:text-white">
+                        {navItems.map((item) => (
+                            <a
+                                key={item}
+                                href="#"
+                                className="block py-2 text-gray-300 hover:text-white"
+                            >
                                 {item}
                             </a>
                         ))}
                         <div className="mt-4">
-                            <Button className="w-full bg-white text-black hover:bg-gray-200">
-                                <Wallet className="w-4 h-4 mr-2" />
-                                Connect Wallet
-                            </Button>
+                            <WalletMultiButton className="w-full bg-white text-black hover:bg-gray-200" />
                         </div>
                     </motion.div>
                 )}
@@ -109,16 +121,24 @@ const Hero = () => {
                             *SIMPLE TRUST
                         </div>
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                            Transform Your Wealth With Stable.fun <span className="text-muted">&trade;</span>
+                            Transform Your Wealth With Stable.fun{" "}
+                            <span className="text-muted">&trade;</span>
                         </h1>
                         <p className="text-gray-400">
-                            Create your own stablecoins backed by yield-bearing stablebonds and start earning today.
+                            Create your own stablecoins backed by yield-bearing stablebonds
+                            and start earning today.
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <Button variant="outline" className="border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-colors text-black hover:text-white">
+                            <Button
+                                variant="outline"
+                                className="border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-colors text-black hover:text-white"
+                            >
                                 Get Started
                             </Button>
-                            <Button variant="outline" className="border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-colors text-black hover:text-white">
+                            <Button
+                                variant="outline"
+                                className="border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-colors text-black hover:text-white"
+                            >
                                 Learn More
                             </Button>
                         </div>
@@ -141,8 +161,9 @@ const Hero = () => {
                     >
                         <div className="bg-gray-900/50 backdrop-blur-sm p-6 rounded-lg border border-gray-800">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-2xl font-bold">Tokens Created (30 Days)</h3>
-                                {/* <button className="text-gray-400">•••</button> */}
+                                <h3 className="text-2xl font-bold">
+                                    Tokens Created (30 Days)
+                                </h3>
                             </div>
                             <div className="h-64 flex items-end justify-between space-x-1">
                                 {tokenData.map((height, i) => (
@@ -159,7 +180,10 @@ const Hero = () => {
                                         ></div>
                                         <div
                                             className="w-full bg-gray-600 absolute bottom-0"
-                                            style={{ height: `${height * 0.7}%`, opacity: 0.5 }}
+                                            style={{
+                                                height: `${height * 0.7}%`,
+                                                opacity: 0.5,
+                                            }}
                                         ></div>
                                     </motion.div>
                                 ))}

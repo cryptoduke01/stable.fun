@@ -1,25 +1,85 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Coins, Upload, Globe, Image as ImageIcon } from 'lucide-react';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Coins, Upload, Globe, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import DashboardCard from "./DashboardCard"
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast"
+(async () => {
+  const { StablebondProgram } = await import("@etherfuse/stablebond-sdk");
+  console.log(StablebondProgram);
+})();
+
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const TokenFactory = () => {
   const [selectedModal, setSelectedModal] = useState(null);
-  const [previousTokens, setPreviousTokens] = useState([
-    { 
-      name: "USD Stable", 
-      symbol: "USDS", 
-      icon: "🔵",
-      targetCurrency: "USD",
-      totalSupply: "1,000,000"
-    }
-  ]);
+  const [tokenName, setTokenName] = useState("");
+  const [tokenSymbol, setTokenSymbol] = useState("");
+  const [tokenIcon, setTokenIcon] = useState(null);
+  const [targetCurrency, setTargetCurrency] = useState("");
+  const [initialSupply, setInitialSupply] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { publicKey, connected } = useWallet();
+  const { toast } = useToast();
 
   const currencies = ["USD", "EUR", "GBP", "JPY", "AUD"];
+
+  const createToken = async () => {
+    if (!connected) {
+      toast({
+        title: "Wallet not connected",
+        description: "Please connect your wallet first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!tokenName || !tokenSymbol || !targetCurrency || !initialSupply) {
+      toast({
+        title: "Input Missing",
+        description: "Please provide all token details.",
+        variant: "warning",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // Initialize Stablebond Program
+      const stablebondProgram = new StablebondProgram("RPC_ENDPOINT", publicKey);
+
+      // Create stablecoin using the Stablebond Program
+      const stablecoin = await stablebondProgram.mintBond({
+        stablebondAddress: "BOND_ADDRESS",
+        uiAmount: parseFloat(initialSupply),
+      });
+
+      toast({
+        title: "Stablecoin Created",
+        description: `Your stablecoin ${tokenName} (${tokenSymbol}) has been created!`,
+        variant: "success",
+      });
+
+      // Reset inputs after successful creation
+      setTokenName("");
+      setTokenSymbol("");
+      setTargetCurrency("");
+      setInitialSupply("");
+      setTokenIcon(null);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `There was an error creating your stablecoin: ${error.message}`,
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const cards = [
     {
@@ -45,43 +105,8 @@ const TokenFactory = () => {
       title: "Join\nThe Ecosystem",
       description: "Move your financial transactions across different protocols",
       image: <Globe className="w-16 h-16 text-gray-400" />,
-    }
+    },
   ];
-
-  // Card component with consistent styling
-  const DashboardCard = ({ tag, title, description, image, onClick, className }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 relative overflow-hidden group cursor-pointer ${className}`}
-      onClick={onClick}
-    >
-      <div className="relative z-10">
-        <span className="inline-block px-4 py-1 bg-gray-800 rounded-full text-xs mb-4">
-          {tag}
-        </span>
-        <h3 className="text-xl md:text-2xl font-bold mb-4 whitespace-pre-line">
-          {title}
-        </h3>
-        <p className="text-gray-400 text-sm md:text-base max-w-[80%]">
-          {description}
-        </p>
-        {typeof image === 'string' ? (
-          <div className="absolute bottom-6 right-6 text-2xl md:text-4xl font-bold text-gray-700">
-            {image}
-          </div>
-        ) : (
-          <motion.div
-            className="absolute bottom-6 right-6"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-            {image}
-          </motion.div>
-        )}
-      </div>
-    </motion.div>
-  );
 
   return (
     <section className="min-h-screen bg-black text-white relative py-12 md:py-24">
@@ -106,32 +131,6 @@ const TokenFactory = () => {
               <DashboardCard {...cards[3]} onClick={() => setSelectedModal("Ecosystem")} />
             </div>
           </div>
-
-          {/* Previous Tokens Section
-          <div className="mt-8">
-            <h3 className="text-xl md:text-2xl font-bold mb-4">Your Stablecoins</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {previousTokens.map((token, index) => (
-                <Card key={index} className="bg-gray-900/80 backdrop-blur-sm border-gray-800 p-4">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <span className="text-2xl">{token.icon}</span>
-                    <div>
-                      <h4 className="font-bold">{token.name}</h4>
-                      <p className="text-sm text-gray-400">{token.symbol}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-400">Target: {token.targetCurrency}</p>
-                    <p className="text-sm text-gray-400">Supply: {token.totalSupply}</p>
-                    <div className="flex space-x-2 mt-4">
-                      <Button size="sm" variant="outline" className="w-1/2">Mint</Button>
-                      <Button size="sm" variant="outline" className="w-1/2">Redeem</Button>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div> */}
         </div>
       </div>
 
@@ -166,6 +165,8 @@ const TokenFactory = () => {
                       <Input
                         placeholder="e.g., My Stable Token"
                         className="bg-black/50 border-gray-800"
+                        value={tokenName}
+                        onChange={(e) => setTokenName(e.target.value)}
                       />
                     </div>
                     <div>
@@ -175,6 +176,8 @@ const TokenFactory = () => {
                       <Input
                         placeholder="e.g., MST"
                         className="bg-black/50 border-gray-800"
+                        value={tokenSymbol}
+                        onChange={(e) => setTokenSymbol(e.target.value)}
                       />
                     </div>
                     <div>
@@ -192,7 +195,10 @@ const TokenFactory = () => {
                       <label className="block text-sm font-medium text-gray-400 mb-2">
                         Target Fiat Currency
                       </label>
-                      <Select>
+                      <Select
+                        value={targetCurrency}
+                        onValueChange={setTargetCurrency}
+                      >
                         <SelectTrigger className="bg-black/50 border-gray-800">
                           <SelectValue placeholder="Select currency" />
                         </SelectTrigger>
@@ -213,10 +219,16 @@ const TokenFactory = () => {
                         type="number"
                         placeholder="e.g., 1000000"
                         className="bg-black/50 border-gray-800"
+                        value={initialSupply}
+                        onChange={(e) => setInitialSupply(e.target.value)}
                       />
                     </div>
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                      Create Stablecoin
+                    <Button
+                      onClick={createToken}
+                      className="w-full bg-blue-600 hover:bg-blue-700"
+                      disabled={isProcessing}
+                    >
+                      {isProcessing ? "Creating..." : "Create Stablecoin"}
                     </Button>
                   </>
                 )}
